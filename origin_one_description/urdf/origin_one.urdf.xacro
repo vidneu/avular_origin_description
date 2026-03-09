@@ -3,8 +3,10 @@
 <robot name="avular_origin_one" xmlns:xacro="http://ros.org/wiki/xacro" xmlns:ignition="http://sdformat.org/schemas/root.xsd">
 
   <xacro:arg name="drive_configuration" default="skid_steer_drive"/>
+  <xacro:arg name="robot_namespace" default="robot"/>
   
   <xacro:property name="var" value="$(arg drive_configuration)"/>
+  <xacro:property name="ns" value="$(arg robot_namespace)"/>
   <xacro:if value="${var == 'skid_steer_drive'}">
     <xacro:property name="trackWidth" value="0.500"/>
     <xacro:property name="wheelbase" value="0.410"/>
@@ -48,11 +50,7 @@
 
   <gazebo>
     <static>false</static>
-    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
-      <render_engine>ogre2</render_engine>
-    </plugin>
-    <plugin filename="ignition-gazebo-navsat-system" name="ignition::gazebo::systems::NavSat">
-    </plugin>
+    <!-- Sensors & NavSat system plugins are loaded at world level (baylands.world) -->
   </gazebo>
 
   <link name='base_link' />
@@ -104,7 +102,7 @@
             <ode>
               <mu>1</mu>
               <mu2>1</mu2>
-              <slip1>0.015</slip1>
+              <slip1>0.001</slip1>
               <slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -120,7 +118,7 @@
             <ode>
               <mu>1</mu>
               <mu2>1</mu2>
-              <slip1>0.015</slip1>
+              <slip1>0.001</slip1>
               <slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -129,7 +127,7 @@
             <ode>
               <mu>1</mu>
               <mu2>1</mu2>
-              <slip1>0.015</slip1>
+              <slip1>0.001</slip1>
               <slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -171,7 +169,7 @@
             <ode>
               <mu>1</mu>
               <mu2>1</mu2>
-              <slip1>0.015</slip1>
+              <slip1>0.001</slip1>
               <slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -187,7 +185,7 @@
             <ode>
               <mu>1</mu>
               <mu2>1</mu2>
-              <slip1>0.015</slip1>
+              <slip1>0.001</slip1>
               <slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -196,7 +194,7 @@
             <ode>
               <mu>1</mu>
               <mu2>1</mu2>
-              <slip1>0.015</slip1>
+              <slip1>0.001</slip1>
               <slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -238,7 +236,7 @@
             <ode>
               <mu>1</mu>
               <mu2>1</mu2>
-              <slip1>0.015</slip1>
+              <slip1>0.001</slip1>
               <slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -254,7 +252,7 @@
             <ode>
               <mu>1</mu>
               <mu2>1</mu2>
-              <slip1>0.015</slip1>
+              <slip1>0.001</slip1>
               <slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -263,7 +261,7 @@
             <ode>
               <mu>1</mu>
               <mu2>1</mu2>
-              <slip1>0.015</slip1>
+              <slip1>0.001</slip1>
               <slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -305,7 +303,7 @@
             <ode>
               <mu>1</mu>
               <mu2>1</mu2>
-              <slip1>0.015</slip1>
+              <slip1>0.001</slip1>
               <slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -321,7 +319,7 @@
             <ode>
               <mu>1</mu>
               <mu2>1</mu2>
-              <slip1>0.015</slip1>
+              <slip1>0.001</slip1>
               <slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -330,7 +328,7 @@
             <ode>
               <mu>1</mu>
               <mu2>1</mu2>
-              <slip1>0.015</slip1>
+              <slip1>0.001</slip1>
               <slip2>0</slip2>
               <fdir1>0 0 1</fdir1>
             </ode>
@@ -382,8 +380,8 @@
 
   <gazebo reference="lidar_link_gazebo">
     <sensor name='ouster_lidar' type='gpu_lidar'>
-      <topic>/robot/lidar</topic>
-      <gz_frame_id>os_lidar</gz_frame_id>
+      <topic>/model/${ns}/lidar</topic>
+      <gz_frame_id>${ns}/lidar_link_gazebo</gz_frame_id>
       <update_rate>10</update_rate>
       <lidar>
         <scan>
@@ -430,8 +428,8 @@
 
   <gazebo reference="camera_link">
     <sensor name="realsense_d435" type="rgbd_camera">
-      <gz_frame_id>camera_link</gz_frame_id>
-      <topic>/robot/camera</topic>
+      <gz_frame_id>${ns}/camera_link</gz_frame_id>
+      <topic>/model/${ns}/camera</topic>
       <update_rate>6</update_rate>
       <camera name="camera">
         <horizontal_fov>1.0472</horizontal_fov>
@@ -493,10 +491,10 @@
 
   <gazebo reference="gnss_link">
     <sensor name="navsat" type="navsat">
-      <gz_frame_id>gnss_link</gz_frame_id>
+      <gz_frame_id>${ns}/gnss_link</gz_frame_id>
       <always_on>1</always_on>
       <update_rate>10</update_rate>
-      <topic>/robot/gnss</topic>
+      <topic>/model/${ns}/navsat</topic>
       <!-- Obtained from http://sdformat.org/spec?ver=1.11&elem=sensor#sensor_gps -->
       <gps>
         <position_sensing>
@@ -552,6 +550,7 @@
     <parent link="main_body"/>
     <axis xyz="0 0 1"/>
     <limit effort="100000.0" velocity="10"/>
+    <dynamics damping="0.5" friction="0.3"/>
   </joint>
 
   <joint type="continuous" name="main_body_right_front_wheel">
@@ -560,6 +559,7 @@
     <parent link="main_body"/>
     <axis xyz="0 0 1"/>
     <limit effort="100000.0" velocity="10"/>
+    <dynamics damping="0.5" friction="0.3"/>
   </joint>
 
   <joint type="continuous" name="main_body_left_rear_wheel">
@@ -568,6 +568,7 @@
     <parent link="main_body"/>
     <axis xyz="0 0 1"/>
     <limit effort="100000.0" velocity="10"/>
+    <dynamics damping="0.5" friction="0.3"/>
   </joint>
 
   <joint type="continuous" name="main_body_right_rear_wheel">
@@ -576,6 +577,7 @@
     <parent link="main_body"/>
     <axis xyz="0 0 1"/>
     <limit effort="100000.0" velocity="10"/>
+    <dynamics damping="0.5" friction="0.3"/>
   </joint>
 
   <joint type="fixed" name="ouster_platform_joint">
@@ -654,7 +656,7 @@
   
   <gazebo>
     <plugin filename="gz-sim-joint-state-publisher-system" name="ignition::gazebo::systems::JointStatePublisher">
-      <topic>/robot/joint_states</topic>
+      <topic>/model/${ns}/joint_state</topic>
     </plugin>
     <!-- Controls the differential drive robot -->
     <xacro:if value="${var == 'skid_steer_drive'}">
@@ -673,11 +675,11 @@
         <min_linear_velocity>-1.5</min_linear_velocity>
         <max_angular_velocity>2</max_angular_velocity>
         <min_angular_velocity>-2</min_angular_velocity>
-        <topic>/robot/cmd_vel</topic>
-        <odom_topic>/robot/odom</odom_topic>
-        <tf_topic>/robot/tf</tf_topic>
-        <frame_id>odom</frame_id>
-        <child_frame_id>base_link</child_frame_id>
+        <topic>/model/${ns}/cmd_vel</topic>
+        <odom_topic>/model/${ns}/odometry</odom_topic>
+        <tf_topic>/model/${ns}/tf</tf_topic>
+        <frame_id>${ns}/odom</frame_id>
+        <child_frame_id>${ns}/base_link</child_frame_id>
       </plugin>
     </xacro:if>
 
@@ -698,11 +700,11 @@
         <min_linear_velocity>-2.5</min_linear_velocity>
         <max_angular_velocity>3</max_angular_velocity>
         <min_angular_velocity>-3</min_angular_velocity>
-        <topic>/robot/cmd_vel</topic>
-        <odom_topic>/robot/odom</odom_topic>
-        <tf_topic>/robot/tf</tf_topic>
-        <frame_id>odom</frame_id>
-        <child_frame_id>base_link</child_frame_id>
+        <topic>/model/${ns}/cmd_vel</topic>
+        <odom_topic>/model/${ns}/odometry</odom_topic>
+        <tf_topic>/model/${ns}/tf</tf_topic>
+        <frame_id>${ns}/odom</frame_id>
+        <child_frame_id>${ns}/base_link</child_frame_id>
       </plugin>
     </xacro:if>
 
@@ -723,11 +725,11 @@
         <min_linear_velocity>-2.5</min_linear_velocity>
         <max_angular_velocity>3</max_angular_velocity>
         <min_angular_velocity>-3</min_angular_velocity>
-        <topic>/robot/cmd_vel</topic>
-        <odom_topic>/robot/odom</odom_topic>
-        <tf_topic>/robot/tf</tf_topic>
-        <frame_id>odom</frame_id>
-        <child_frame_id>base_link</child_frame_id>
+        <topic>/model/${ns}/cmd_vel</topic>
+        <odom_topic>/model/${ns}/odometry</odom_topic>
+        <tf_topic>/model/${ns}/tf</tf_topic>
+        <frame_id>${ns}/odom</frame_id>
+        <child_frame_id>${ns}/base_link</child_frame_id>
       </plugin>
     </xacro:if>
 
@@ -744,17 +746,17 @@
         <wheel_radius>${wheelRadius}</wheel_radius>
         <min_acceleration>-5</min_acceleration>
         <max_acceleration>5</max_acceleration>
-        <topic>/robot/cmd_vel</topic>
+        <topic>/model/${ns}/cmd_vel</topic>
       </plugin>
 
     <!-- Seperate plugin for odometry is used because mecanum drive plug does not have this feature-->
     <!-- see https://github.com/gazebosim/gz-sim/pull/2297 for more information -->
       <plugin 
         filename="gz-sim-odometry-publisher-system" name="ignition::gazebo::systems::OdometryPublisher">
-        <odom_topic>/robot/odom</odom_topic>
-        <tf_topic>/robot/tf</tf_topic>
-        <odom_frame>odom</odom_frame>
-        <robot_base_frame>base_link</robot_base_frame>
+        <odom_topic>/model/${ns}/odometry</odom_topic>
+        <tf_topic>/model/${ns}/tf</tf_topic>
+        <odom_frame>${ns}/odom</odom_frame>
+        <robot_base_frame>${ns}/base_link</robot_base_frame>
       </plugin>
 
     </xacro:if>
