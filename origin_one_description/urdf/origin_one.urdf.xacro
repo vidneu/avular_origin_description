@@ -538,6 +538,28 @@
   <link name="imu_link">
   </link>
 
+  <gazebo reference="imu_link">
+    <sensor name="imu_sensor" type="imu">
+      <gz_frame_id>${ns}/imu_link</gz_frame_id>
+      <always_on>1</always_on>
+      <update_rate>100</update_rate>
+      <topic>/model/${ns}/imu</topic>
+      <visualize>false</visualize>
+      <imu>
+        <angular_velocity>
+          <x><noise type="gaussian"><mean>0.0</mean><stddev>0.0002</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0.0</mean><stddev>0.0002</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0.0</mean><stddev>0.0002</stddev></noise></z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x><noise type="gaussian"><mean>0.0</mean><stddev>0.017</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0.0</mean><stddev>0.017</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0.0</mean><stddev>0.017</stddev></noise></z>
+        </linear_acceleration>
+      </imu>
+    </sensor>
+  </gazebo>
+
   <joint type="fixed" name="base_body">
     <origin xyz="0.0 0 ${groundClearance}" rpy="0 0 0"/>
     <child link="main_body" />
@@ -648,7 +670,7 @@
 
 
   <joint type="fixed" name="imu_joint">
-    <origin xyz="-0.1266 0.0749 0.066" rpy="0 0 2.357"/>
+    <origin xyz="-0.1266 0.0749 0.066" rpy="0 0 0"/>
     <child link="imu_link"/>
     <parent link="main_body"/>
   </joint>
