@@ -502,7 +502,7 @@
             <!-- Noise in degrees: https://github.com/gazebosim/gz-sensors/issues/325 -->
             <noise type="gaussian">
               <mean>0.0</mean>
-              <stddev>0.0001</stddev>
+              <stddev>0.000</stddev>
             </noise>
           </horizontal>
           <vertical>
