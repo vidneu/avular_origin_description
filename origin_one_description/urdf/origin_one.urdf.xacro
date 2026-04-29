@@ -52,6 +52,9 @@
     <static>false</static>
     <plugin filename="ignition-gazebo-navsat-system" name="ignition::gazebo::systems::NavSat">
     </plugin>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
   </gazebo>
 
   <link name='base_link' />
