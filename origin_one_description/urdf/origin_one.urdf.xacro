@@ -382,7 +382,8 @@
     <sensor name='ouster_lidar' type='gpu_lidar'>
       <topic>/model/${ns}/lidar</topic>
       <gz_frame_id>${ns}/lidar_link_gazebo</gz_frame_id>
-      <update_rate>10</update_rate>
+      <!-- 20 Hz update rate (real Ouster OS1 supports 10/20 Hz). -->
+      <update_rate>20</update_rate>
       <lidar>
         <scan>
           <horizontal>
@@ -391,11 +392,15 @@
             <min_angle>-3.1415926</min_angle>
             <max_angle>3.1415926</max_angle>
           </horizontal>
+          <!-- 64 vertical beams biased downward: about -40° to +5° instead
+               of the symmetric ±22°. Real OS1 is symmetric, but here we
+               concentrate beams on the terrain where the heightmap needs
+               density and stop wasting half on the sky. -->
           <vertical>
-            <samples>32</samples>
+            <samples>64</samples>
             <resolution>1</resolution>
-            <min_angle>-0.39</min_angle>
-            <max_angle>0.39</max_angle>
+            <min_angle>-0.70</min_angle>
+            <max_angle>0.087</max_angle>
           </vertical>
         </scan>
         <range>
@@ -409,7 +414,9 @@
         </noise>
       </lidar>
       <alwaysOn>1</alwaysOn>
-      <visualize>true</visualize>
+      <!-- visualize: false saves GUI-side render budget; the cloud is still
+           inspectable in RViz via /{name}/lidar/points. -->
+      <visualize>false</visualize>
     </sensor>
   </gazebo>
 
@@ -436,12 +443,12 @@
         <lens>
           <intrinsics>
             <!-- fx = fy = width / ( 2 * tan (hfov / 2 ) ) -->
-            <fx>1108.50938</fx>
-            <fy>1108.50938</fy>
+            <fx>554.254691</fx>
+            <fy>554.254691</fy>
             <!-- cx = ( width + 1 ) / 2 -->
-            <cx>640.5</cx>
+            <cx>320.5</cx>
             <!-- cy = ( height + 1 ) / 2 -->
-            <cy>480.5</cy>
+            <cy>240.5</cy>
             <s>0</s>
           </intrinsics>
         </lens>
@@ -454,8 +461,8 @@
           <center>0.5 0.5</center>
         </distortion>
         <image>
-          <width>1280</width>
-          <height>960</height>
+          <width>640</width>
+          <height>480</height>
           <format>R8G8B8</format>
         </image>
         <clip>
